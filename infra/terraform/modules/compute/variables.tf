@@ -10,4 +10,7 @@ variable "node_profile" {
     type    =   string
 }
 
+variable "open_sg_id" {
+    type    =   string
+}
 

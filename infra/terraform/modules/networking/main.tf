@@ -35,3 +35,30 @@ resource "aws_route_table" "public_rt" {
         Name = "pkd-public_rt"
     }
 }
+
+resource "aws_route_table_association" "public_rta" {
+    subnet_id      = aws_subnet.public_subnet.id
+    route_table_id = aws_route_table.public_rt.id
+}
+
+resource "aws_security_group" "allow_all" {
+  name        = "allow_all"
+  description = "Allow inbound and outbound traffic"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "all"
+    # Please restrict your ingress to only necessary IPs and ports.
+    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+}

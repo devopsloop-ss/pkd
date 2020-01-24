@@ -15,6 +15,7 @@ module "iam" {
 module "compute" {
   source = "./modules/compute"
   public_subnet_id = module.network.public_subnet_id
+  open_sg_id  = module.network.open_sg_id
   master_profile  = module.iam.master_profile
   node_profile  = module.iam.node_profile
 }

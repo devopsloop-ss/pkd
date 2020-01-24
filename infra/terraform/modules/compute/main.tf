@@ -22,6 +22,7 @@ resource "aws_instance" "master" {
     key_name  =   "sos2"
     subnet_id =   var.public_subnet_id
     iam_instance_profile    =  var.master_profile
+    vpc_security_group_ids  =   [var.open_sg_id]
 
     root_block_device   {
         volume_size = 20
@@ -39,6 +40,7 @@ resource "aws_instance" "node" {
     key_name  =   "sos2"
     subnet_id =   var.public_subnet_id
     iam_instance_profile    =   var.node_profile
+    vpc_security_group_ids  =   [var.open_sg_id]
 
     root_block_device   {
         volume_size = 20
