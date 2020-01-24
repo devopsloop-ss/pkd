@@ -1,14 +1,14 @@
-variable "region" {
+variable "aws_region" {
     type = string
     default = "us-east-1"
 }
 
-variable "profile"{
+variable "profile" {
     type = string
     default = "default"
 }
 
-variable "credentials"{
+variable "credentials" {
     type = string
     default = "$HOME/.aws/credentials"
 }
