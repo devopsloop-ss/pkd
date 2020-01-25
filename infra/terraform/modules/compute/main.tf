@@ -1,14 +1,13 @@
 #AMI selection data source
 data "aws_ami" "ubuntu" {
     most_recent = true
-
     filter {
-        name   = "name"
-        values = ["ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*"]
+        name = "name"
+        values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
     }
 
     filter {
-        name   = "virtualization-type"
+        name = "virtualization-type"
         values = ["hvm"]
     }
 
@@ -18,7 +17,7 @@ data "aws_ami" "ubuntu" {
 #Master instance
 resource "aws_instance" "master" {
     ami           = data.aws_ami.ubuntu.id
-    instance_type = "t2.micro"
+    instance_type = "t3.micro"
     key_name  =   "sos2"
     subnet_id =   var.public_subnet_id
     iam_instance_profile    =  var.master_profile
@@ -36,7 +35,7 @@ resource "aws_instance" "master" {
 #Node instance
 resource "aws_instance" "node" {
     ami           = data.aws_ami.ubuntu.id
-    instance_type = "t2.micro"
+    instance_type = "t3.micro"
     key_name  =   "sos2"
     subnet_id =   var.public_subnet_id
     iam_instance_profile    =   var.node_profile

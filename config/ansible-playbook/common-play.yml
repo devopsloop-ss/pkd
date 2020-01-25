@@ -1,0 +1,61 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: Install prerequisites
+      apt:
+        name: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2' ,'software-properties-common']
+        update_cache: yes
+    - name: Add repo keys
+      apt_key:
+        url: "{{item}}"
+      loop:
+      - https://download.docker.com/linux/ubuntu/gpg
+      - https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    - name: Add kubernetes repo
+      apt_repository:
+        repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+        filename: kubernetes
+    - name: Add docker repo
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ansible_distribution_release}}  stable
+        state: present
+        filename: docker
+    - name: Install packages
+      apt:
+        name: "{{item}}"
+        state: latest
+        update_cache: yes
+      loop:
+        - kubelet
+        - kubeadm
+        - kubectl
+        - docker-ce
+#    - name: Change cgroup driver for docker
+#      replace:
+#        path: /lib/systemd/system/docker.service
+#        regexp: "^ExecStart*"
+#        replace: "ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock" # --exec-opt native.cgroupdriver=systemd"
+#    - name: Restart docker
+#      service:
+#        name: docker
+#        state: restarted
+- hosts: master
+  become: true
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: "Build hosts file"
+      lineinfile: dest=/etc/hosts regexp='.*{{ ansible_host }}$' line="{{ ansible_default_ipv4.address }} {{ansible_host}}" state=present
+    #  when: ansible_default_ipv4.address is defined
+    #  with_items: "{{hostvars['master'].ansible_host}}"
+    - name: set hostname
+      hostname:
+        name: master
+    - name: initialize kubeadm
+      command: kubeadm init --pod-network-cidr=10.10.0.0/16
+
+

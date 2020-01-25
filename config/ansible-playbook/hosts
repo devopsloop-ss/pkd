@@ -1,0 +1,4 @@
+[master]
+master  ansible_python_interpreter=/usr/bin/python3
+[node]
+node    ansible_python_interpreter=/usr/bin/python3
